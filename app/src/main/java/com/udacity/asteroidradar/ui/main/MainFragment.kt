@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -21,6 +22,22 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = this
 
         binding.viewModel = viewModel
+
+        viewModel.asteroids.observe(viewLifecycleOwner) {
+            Log.e(
+                "Asteroid Radar",
+                "The database works, list = ${it}"
+            )
+        }
+
+        viewModel.picture.observe(viewLifecycleOwner) {
+            Log.e(
+                "Asteroid Radar",
+                "The database works, picture = ${it}"
+            )
+        }
+
+        viewModel
 
         setHasOptionsMenu(true)
 

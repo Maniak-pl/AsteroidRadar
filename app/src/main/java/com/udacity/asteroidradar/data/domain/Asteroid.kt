@@ -1,8 +1,7 @@
-package com.udacity.asteroidradar.data
+package com.udacity.asteroidradar.data.domain
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-
 
 @Parcelize
 data class Asteroid(
