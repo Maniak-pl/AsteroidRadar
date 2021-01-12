@@ -22,22 +22,7 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = this
 
         binding.viewModel = viewModel
-
-        viewModel.asteroids.observe(viewLifecycleOwner) {
-            Log.e(
-                "Asteroid Radar",
-                "The database works, list = ${it}"
-            )
-        }
-
-        viewModel.picture.observe(viewLifecycleOwner) {
-            Log.e(
-                "Asteroid Radar",
-                "The database works, picture = ${it}"
-            )
-        }
-
-        viewModel
+        binding.asteroidRecycler.adapter = AsteroidsAdapter()
 
         setHasOptionsMenu(true)
 
