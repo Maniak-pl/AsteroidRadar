@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.data.domain.Asteroid
 import com.udacity.asteroidradar.db.getDatabase
+import com.udacity.asteroidradar.repository.FilterType
 import com.udacity.asteroidradar.repository.Repository
 import kotlinx.coroutines.launch
 
@@ -34,5 +35,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun displayPropertyDetailsComplete() {
         _navigateToSelectedProperty.value = null
+    }
+
+    fun applyFilter(filter : FilterType){
+        repository.applyFilter(filter)
     }
 }

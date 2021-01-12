@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.repository
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.api.Network
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
@@ -15,14 +16,37 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import timber.log.Timber
 
+enum class FilterType { WEEKLY, TODAY, SAVED }
+
 class Repository(private val database: NasaDatabase) {
 
+    private val filterType = MutableLiveData(FilterType.WEEKLY)
+
     val asteroids: LiveData<List<Asteroid>> =
-        Transformations.map(database.asteroidsDao.getAsteroidsFromToday(DateHelper.getToday())) { it.toDomainModel() }
+        Transformations.switchMap(filterType) { filter ->
+            when (filter) {
+                FilterType.TODAY ->
+                    Transformations.map(database.asteroidsDao.getAsteroidsFromToday(DateHelper.getToday())) { it.toDomainModel() }
+                FilterType.WEEKLY ->
+                    Transformations.map(
+                        database.asteroidsDao.getAsteroidsFromWeek(
+                            DateHelper.getToday(),
+                            DateHelper.getOneWeekAhead()
+                        )
+                    ) { it.toDomainModel() }
+                FilterType.SAVED ->
+                    Transformations.map(database.asteroidsDao.getAsteroids()) { it.toDomainModel() }
+            }
+        }
+
     val picture: LiveData<PictureOfDay> =
         Transformations.map(database.pictureDao.getPicture()) {
             it?.toDomainModel()
         }
+
+    fun applyFilter(filter: FilterType) {
+        filterType.value = filter
+    }
 
     suspend fun refresh() {
         withContext(Dispatchers.IO) {
